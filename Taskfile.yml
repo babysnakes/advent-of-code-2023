@@ -1,0 +1,22 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  test:
+    desc: Run all tests
+    cmd: dotnet test
+
+  check-format:
+    desc: Check format of all source files
+    cmd: dotnet fantomas --check AOC2023 AOCTests
+
+  format:
+    desc: Format all source files
+    cmd: dotnet fantomas AOC2023 AOCTests
+    
+  run:
+    desc: Run the specified day and part. Pass parameters after '--'
+    cmd: dotnet run --project ./AOC2023/AOC2023.fsproj -- {{.CLI_ARGS}}
+    silent: true
+    
