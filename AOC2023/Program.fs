@@ -1,4 +1,5 @@
 ﻿open System
+open AOC2023
 open AOC2023.Models
 
 let printErrorHelp error =
@@ -18,9 +19,17 @@ Optional parameter type is either 1 or 2
 
 let args = Environment.GetCommandLineArgs() |> Array.skip 1 |> List.ofArray
 
+let measureTime f p =
+    printfn ""
+    let timer = System.Diagnostics.Stopwatch()
+    timer.Start()
+    f p
+    printfn ""
+    printf $"Time elapsed: %i{timer.ElapsedMilliseconds} millis"
+
 let runDay id part =
     match id with
-    | Day1 -> printf $"running day1 with part: {part}"
+    | Day1 -> measureTime Day01.run part
 
 let run args =
     match args with
@@ -28,7 +37,7 @@ let run args =
     | head :: rest ->
         let day = parseDay head
         let part = parsePart rest
-        
+
         match day, part with
         | Ok d, Ok p -> runDay d p
         | Error err, _ -> printErrorHelp err
