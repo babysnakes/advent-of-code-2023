@@ -10,8 +10,13 @@
   <ItemGroup>
     <Compile Include="Models.fs" />
     <Compile Include="Helpers.fs" />
+    <Compile Include="Day02.fs" />
     <Compile Include="Day01.fs" />
     <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FParsec" Version="1.1.1" />
   </ItemGroup>
 
 </Project>

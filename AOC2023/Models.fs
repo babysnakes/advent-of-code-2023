@@ -8,7 +8,9 @@ type Parts =
     | Part2
     | Unspecified
 
-type Day = | Day1
+type Day =
+    | Day1
+    | Day2
 
 let tryParseInt s =
     try
@@ -30,5 +32,6 @@ let parseDay day =
 
     match res.Success, (tryParseInt res.Value) with
     | true, Some 1 -> Ok Day1
+    | true, Some 2 -> Ok Day2
     | true, Some n -> Error $"Invalid day specified ({n})"
     | _, _ -> Error $"Invalid day specified ({day})"

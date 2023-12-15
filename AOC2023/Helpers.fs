@@ -12,3 +12,12 @@ module CommonIO =
 
 module CommonString =
     let split (sep: string) (s: string) = s.Split(sep)
+
+
+module Parser =
+    open FParsec
+
+    let unwrap<'T> (res: ParserResult<'T, unit>) : 'T =
+        match res with
+        | Success(value, _, _) -> value
+        | Failure(error, _, _) -> failwith $"parser error: {error}"
