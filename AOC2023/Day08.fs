@@ -24,7 +24,7 @@ let pLeft = pchar 'L' >>% L
 let pDir = pRight <|> pLeft
 let pDirections = many pDir
 let str s = pstring s
-let pName = regex "[A-Z]{3}"
+let pName = regex @"\w{3}"
 
 let pNode =
     pName .>> str " = (" .>>. (pName .>> str ", " .>>. pName .>> str ")")
@@ -32,10 +32,10 @@ let pNode =
 
 let parseLine s = s |> run pNode |> unwrap
 
-module Part1 =
-    let getInstruction (directions: Direction array) idx =
-        directions[idx % Array.length directions]
+let getInstruction (directions: Direction array) idx =
+    directions[idx % Array.length directions]
 
+module Part1 =
     let compute input =
         let directionStream =
             input
@@ -62,13 +62,42 @@ module Part1 =
 
 
 module Part2 =
+    // Adoption from rosetta stone: https://rosettacode.org/wiki/Least_common_multiple#F#
+    let rec gcd (a: int64) (b: int64) =
+        match a, b with
+        | x, 0L -> abs x
+        | x, y -> gcd y (x % y)
 
-    let compute input = 0
+    let lcm x y = x * y / (gcd x y)
+
+    let followPath directions nodes start =
+        let directionStream = directions |> List.toArray |> getInstruction
+
+        let rec loop node acc =
+            let d = directionStream acc
+            let next = followDirection d node
+
+            if next.EndsWith("Z") then
+                acc + 1
+            else
+                loop (Map.find next nodes) (acc + 1)
+
+        loop (Map.find start nodes) 0
+
+    let compute input =
+        let directions = input |> List.head |> run pDirections |> unwrap
+        let nodes = input |> List.skip 2 |> List.map parseLine |> Map
+
+        nodes
+        |> Map.keys
+        |> Seq.filter (fun s -> s.EndsWith("A"))
+        |> List.ofSeq
+        |> List.map (followPath directions nodes >> int64)
+        |> List.reduce lcm
 
     let run input =
         let result = compute input
         printfn $"Part2: {result}"
-        printfn "NOT IMPLEMENTED"
 
 
 let run (part: Parts) =
