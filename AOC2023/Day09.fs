@@ -45,13 +45,24 @@ module Part1 =
 
 
 module Part2 =
+    let processHistory (h: int32 list) =
+        let rec loop (cur: int list) (firsts: int list) =
+            let parsed =
+                cur |> List.windowed 2 |> List.map (fun l -> List.item 1 l - List.head l)
 
-    let compute input = 0
+            if List.forall ((=) 0) parsed then
+                (List.head cur :: firsts) |> List.fold (fun x y -> y - x) 0
+            else
+                loop parsed ((List.head cur) :: firsts)
+
+        loop h []
+
+    let compute input =
+        input |> List.map parseLine |> List.map processHistory |> List.sum
 
     let run input =
         let result = compute input
         printfn $"Part2: {result}"
-        printfn "NOT IMPLEMENTED"
 
 
 let run (part: Parts) =
