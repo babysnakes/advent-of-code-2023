@@ -5,12 +5,7 @@ open AOC2023.Models
 open AOC2023.CommonIO
 
 type Symbol = { T: char; X: int; Y: int }
-
-type Number =
-    { Num: int
-      StartX: int
-      EndX: int
-      Y: int }
+type Number = { Num: int; StartX: int; EndX: int; Y: int }
 
 let parseLine (lineIdx: int) (line: string) : Number list * Symbol array =
     let parseDigits idx (digits: char list) =

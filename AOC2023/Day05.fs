@@ -6,15 +6,10 @@ open AOC2023.Models
 open AOC2023.CommonIO
 open AOC2023.Parser
 
-type TypeMappingItem =
-    { Destination: int64
-      Source: int64
-      Range: int64 }
+type TypeMappingItem = { Destination: int64; Source: int64; Range: int64 }
 
 let toMappingItem (dest, source, range) =
-    { Destination = dest
-      Source = source
-      Range = range }
+    { Destination = dest; Source = source; Range = range }
 
 let str s = pstring s
 let pSeeds: Parser<int64 list, unit> = str "seeds: " >>. sepEndBy pint64 spaces
@@ -92,9 +87,7 @@ module Part2 =
 
         ns
         |> List.chunkBySize 2
-        |> List.map (fun ls ->
-            { Start = List.head ls
-              Range = List.item 1 ls })
+        |> List.map (fun ls -> { Start = List.head ls; Range = List.item 1 ls })
         |> List.sortBy _.Start
 
     let findSeed seeds soil =
