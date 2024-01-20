@@ -1,3 +1,4 @@
 [*.fs]
 fsharp_max_record_number_of_items = 4
 fsharp_max_record_width = 60
+fsharp_max_if_then_else_short_width = 80

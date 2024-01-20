@@ -76,11 +76,7 @@ module Part2 =
         let rec loop node acc =
             let d = directionStream acc
             let next = followDirection d node
-
-            if next.EndsWith("Z") then
-                acc + 1
-            else
-                loop (Map.find next nodes) (acc + 1)
+            if next.EndsWith("Z") then acc + 1 else loop (Map.find next nodes) (acc + 1)
 
         loop (Map.find start nodes) 0
 

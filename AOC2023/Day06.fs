@@ -37,10 +37,7 @@ module Part2 =
 
     let betterResults (time: int64) (best: int64) =
         let rec loop cur =
-            if (time - cur) * cur > best then
-                loop (cur - 1L)
-            else
-                (cur + 1L)
+            if (time - cur) * cur > best then loop (cur - 1L) else (cur + 1L)
 
         let half = time / 2L
         let min = loop half

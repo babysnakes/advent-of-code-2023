@@ -148,12 +148,9 @@ module Part2 =
         let folder (isInside: bool, insides: int) (t: Tile) =
             let contained = Array.contains t path
 
-            if contained && pointingNorth t then
-                (isInside |> not, insides)
-            else if isInside && not contained then
-                (isInside, insides + 1)
-            else
-                (isInside, insides)
+            if contained && pointingNorth t then (isInside |> not, insides)
+            else if isInside && not contained then (isInside, insides + 1)
+            else (isInside, insides)
 
         data
         |> Array2D.mapi (fun i1 i2 v -> { Idx1 = i1; Idx2 = i2; Type = v })

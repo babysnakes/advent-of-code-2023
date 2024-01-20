@@ -45,12 +45,9 @@ module Part1 =
             match mappings with
             | [] -> n
             | head :: rest ->
-                if n < head.Source then
-                    n
-                else if n < head.Source + head.Range then
-                    head.Destination + (n - head.Source)
-                else
-                    loop rest
+                if n < head.Source then n
+                else if n < head.Source + head.Range then head.Destination + (n - head.Source)
+                else loop rest
 
         loop mappings
 
