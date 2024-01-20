@@ -1,6 +1,5 @@
 ﻿module AOC2023.Day11
 
-open System
 open AOC2023.Models
 open AOC2023.CommonIO
 
@@ -72,13 +71,68 @@ module Part1 =
 
 
 module Part2 =
+    type galaxy = { Idx1: int64; Idx2: int64 }
+    let FACTOR = 1000000L
 
-    let compute input = 0
+    let parse (input: string seq) length1 length2 =
+        seq {
+            for idx1 in { 0 .. length1 - 1 } do
+                for idx2 in { 0 .. length2 - 1 } do
+                    if (Seq.item idx1 input |> Seq.item idx2) = '#' then
+                        yield { Idx1 = int64 idx1; Idx2 = int64 idx2 }
+        }
+
+    let allPairs galaxies =
+        let sortTuple (g1, g2) =
+            [ g1; g2 ] |> List.sort |> (fun gs -> (List.head gs, List.item 1 gs))
+
+        List.allPairs galaxies galaxies
+        |> List.filter (fun (a, b) -> a <> b)
+        |> List.map sortTuple
+        |> Set.ofList
+        |> Set.toList
+
+    // nicer implementation of expand:
+    // https://github.com/jovaneyck/advent-of-code-2023/blob/main/day%2011/part1.fsx
+    let expandIdx1 empties galaxy =
+        let diff = empties |> List.filter (fun i -> i < galaxy.Idx1) |> List.length |> int64
+        { galaxy with Idx1 = galaxy.Idx1 + (diff * FACTOR - diff) }
+
+    let expandIdx2 empties galaxy =
+        let diff = empties |> List.filter (fun i -> i < galaxy.Idx2) |> List.length |> int64
+        { galaxy with Idx2 = galaxy.Idx2 + (diff * FACTOR - diff) }
+
+    let findNoGalaxies comparer galaxies length =
+        seq {
+            for idx in { 0 .. length - 1 } do
+                if galaxies |> Seq.forall (comparer idx) then
+                    yield int64 idx
+        }
+        |> Seq.toList
+
+    let findNoGalaxiesIdx1 = findNoGalaxies (fun idx g -> g.Idx1 <> int64 idx)
+    let findNoGalaxiesIdx2 = findNoGalaxies (fun idx g -> g.Idx2 <> int64 idx)
+
+    let steps (g1, g2) =
+        (abs (g1.Idx1 - g2.Idx1)) + (abs (g1.Idx2 - g2.Idx2))
+
+    let compute input =
+        let length1 = Seq.length input
+        let length2 = Seq.item 1 input |> Seq.length
+        let galaxies = parse input length1 length2 |> List.ofSeq
+        let noGalaxiesIdx1 = findNoGalaxiesIdx1 galaxies length1
+        let noGalaxiesIdx2 = findNoGalaxiesIdx2 galaxies length2
+
+        galaxies
+        |> List.map (expandIdx1 noGalaxiesIdx1)
+        |> List.map (expandIdx2 noGalaxiesIdx2)
+        |> allPairs
+        |> List.map steps
+        |> List.sum
 
     let run input =
         let result = compute input
         printfn $"Part2: {result}"
-        printfn "NOT IMPLEMENTED"
 
 
 let run (part: Parts) =

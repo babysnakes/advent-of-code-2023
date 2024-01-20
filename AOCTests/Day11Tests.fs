@@ -14,9 +14,9 @@ let ``part1 computes correctly`` (input: string) (expected: int) =
     test <@ result = expected @>
 
 [<Theory>]
-[<InlineData("day11-example.txt", 0)>]
-// [<InlineData("day11-input.txt", 0)>]
-let ``part2 computes correctly`` (input: string) (expected: int) =
-    let lines = readLines input |> List.ofSeq
+[<InlineData("day11-example.txt", 82000210L)>]
+[<InlineData("day11-input.txt", 632003913611L)>]
+let ``part2 computes correctly`` (input: string) (expected: int64) =
+    let lines = readLines input
     let result = Part2.compute lines
     test <@ result = expected @>
