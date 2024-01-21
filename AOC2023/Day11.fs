@@ -21,8 +21,7 @@ module Part1 =
         List.allPairs galaxies galaxies
         |> List.filter (fun (a, b) -> a <> b)
         |> List.map sortTuple
-        |> Set.ofList
-        |> Set.toList
+        |> List.distinct
 
     let expand1 (galaxies: (galaxy * int) list) idx =
         galaxies
@@ -89,8 +88,7 @@ module Part2 =
         List.allPairs galaxies galaxies
         |> List.filter (fun (a, b) -> a <> b)
         |> List.map sortTuple
-        |> Set.ofList
-        |> Set.toList
+        |> List.distinct
 
     // nicer implementation of expand:
     // https://github.com/jovaneyck/advent-of-code-2023/blob/main/day%2011/part1.fsx
