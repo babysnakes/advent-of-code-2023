@@ -1,6 +1,5 @@
 ﻿module AOC2023.Day14
 
-open System
 open AOC2023.Models
 open AOC2023.CommonIO
 
@@ -23,6 +22,13 @@ let parseInput (lines: string array) =
     }
     |> Seq.toList
 
+let sumColumnLoad length rocks =
+    rocks
+    |> List.map (function
+        | { RockLocation.tip = Rounded; RockLocation.idx1 = idx } -> length - idx
+        | _ -> 0)
+    |> List.sum
+
 module Part1 =
     let rollColumnNorth (rocks: RockLocation list) =
         let folder (nextFree: int, acc: RockLocation list) rock =
@@ -44,13 +50,6 @@ module Part1 =
         |> Map.values
         |> Seq.toList
 
-    let sumColumnLoad length rocks =
-        rocks
-        |> List.map (function
-            | { RockLocation.tip = Rounded; RockLocation.idx1 = idx } -> length - idx
-            | _ -> 0)
-        |> List.sum
-
     let compute input =
         input
         |> parseInput
@@ -64,14 +63,79 @@ module Part1 =
         printfn $"Part1: {result}"
 
 
+// The video linked below helped me figure out loop discovery:
+// https://www.youtube.com/watch?v=WCVOBKUNc38&ab_channel=HyperNeutrino
 module Part2 =
+    let folderNorth (nextFree: int, acc: RockLocation list) rock =
+        match rock with
+        | { RockLocation.tip = Cube } -> (rock.idx1 + 1, rock :: acc)
+        | { RockLocation.tip = Rounded } -> (nextFree + 1, { rock with idx1 = nextFree } :: acc)
 
-    let compute input = 0
+    let folderWest (nextFree: int, acc: RockLocation list) rock =
+        match rock with
+        | { RockLocation.tip = Cube } -> (rock.idx2 + 1, rock :: acc)
+        | { RockLocation.tip = Rounded } -> (nextFree + 1, { rock with idx2 = nextFree } :: acc)
+
+    let folderSouth (nextFree: int, acc: RockLocation list) rock =
+        match rock with
+        | { RockLocation.tip = Cube } -> (rock.idx1 - 1, rock :: acc)
+        | { RockLocation.tip = Rounded } -> (nextFree - 1, { rock with idx1 = nextFree } :: acc)
+
+    let folderEast (nextFree: int, acc: RockLocation list) rock =
+        match rock with
+        | { RockLocation.tip = Cube } -> (rock.idx2 - 1, rock :: acc)
+        | { RockLocation.tip = Rounded } -> (nextFree - 1, { rock with idx2 = nextFree } :: acc)
+
+    let tiltDirection groupBy sorter folder n rocks =
+        rocks
+        |> List.groupBy groupBy
+        |> List.map (snd >> sorter)
+        |> List.map (List.fold folder (n, []) >> snd)
+        |> List.concat
+
+    let tiltNorth = tiltDirection (fun r -> r.idx2) (List.sortBy _.idx1) folderNorth 0
+    let tiltWest = tiltDirection (fun r -> r.idx1) (List.sortBy _.idx2) folderWest 0
+
+    let tiltSouth last =
+        tiltDirection (fun r -> r.idx2) (List.sortByDescending _.idx1) folderSouth last
+
+    let tiltEast last =
+        tiltDirection (fun r -> r.idx1) (List.sortByDescending _.idx2) folderEast last
+
+    let fullCycle index1 index2 rocks =
+        rocks
+        |> tiltNorth
+        |> tiltWest
+        |> tiltSouth (index1 - 1)
+        |> tiltEast (index2 - 1)
+
+    let cycleUntilLoop index1 index2 rocks =
+        let rec loop rocks acc =
+            let result = fullCycle index1 index2 rocks
+
+            if acc |> List.contains result then
+                let rev = List.rev acc
+                let first = List.findIndex (fun i -> i = result) rev
+                (first, rev)
+            else
+                loop result (result :: acc)
+
+        loop rocks [ rocks ]
+
+    let compute input =
+        let rocks = parseInput input
+        let index1 = Array.length input
+        let index2 = input[0] |> String.length
+        let loopStart, cycles = cycleUntilLoop index1 index2 rocks
+
+        let computedIndex =
+            (1000000000 - loopStart) % ((List.length cycles) - loopStart) + loopStart
+
+        cycles |> List.item computedIndex |> sumColumnLoad index1
 
     let run input =
         let result = compute input
         printfn $"Part2: {result}"
-        printfn "NOT IMPLEMENTED"
 
 
 let run (part: Parts) =
