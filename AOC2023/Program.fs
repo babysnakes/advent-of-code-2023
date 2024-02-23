@@ -44,6 +44,7 @@ let runDay id part =
     | Day13 -> measureTime Day13.run part
     | Day14 -> measureTime Day14.run part
     | Day15 -> measureTime Day15.run part
+    | Day16 -> measureTime Day16.run part
 
 let run args =
     match args with
