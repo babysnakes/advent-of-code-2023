@@ -101,8 +101,21 @@ module Part1 =
 
 
 module Part2 =
+    let allEntryPoints max =
+        [ for i in 0..max do
+              yield (Right, (i, 0))
+              yield (Left, (i, max))
+              yield (Top, (max, i))
+              yield (Bottom, (0, i)) ]
 
-    let compute input = 0
+    let compute input =
+        let max = (input |> List.length) - 1
+        let grid = parse input
+
+        allEntryPoints max
+        |> List.map (fun (dir, loc) -> traceBeams grid max dir loc)
+        |> List.max
+
 
     let run input =
         let result = compute input
