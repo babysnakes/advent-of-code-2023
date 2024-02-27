@@ -26,6 +26,7 @@ type Day =
     | Day15
     | Day16
     | Day17
+    | Day18
 
 let tryParseInt s =
     try
@@ -63,5 +64,6 @@ let parseDay day =
     | true, Some 15 -> Ok Day15
     | true, Some 16 -> Ok Day16
     | true, Some 17 -> Ok Day17
+    | true, Some 18 -> Ok Day18
     | true, Some n -> Error $"Invalid day specified ({n})"
     | _, _ -> Error $"Invalid day specified ({day})"
