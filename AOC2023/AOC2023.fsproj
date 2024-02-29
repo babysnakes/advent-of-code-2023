@@ -1,12 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <WarningsAsErrors>FS0025</WarningsAsErrors>
     <AssemblyName>aoc-2023</AssemblyName>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="Models.fs" />
     <Compile Include="Helpers.fs" />
@@ -31,9 +30,5 @@
     <Compile Include="Day19.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="FParsec" Version="1.1.1" />
-  </ItemGroup>
-
+  <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>
