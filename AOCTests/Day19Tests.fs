@@ -14,9 +14,9 @@ let ``part1 computes correctly`` (fileName: string) (expected: int) =
     test <@ result = expected @>
 
 [<Theory>]
-[<InlineData("day19-example.txt", 0)>]
-// [<InlineData("day19-input.txt", 0)>]
-let ``part2 computes correctly`` (fileName: string) (expected: int) =
+[<InlineData("day19-example.txt", 167409079868000L)>]
+[<InlineData("day19-input.txt", 131029523269531L)>]
+let ``part2 computes correctly`` (fileName: string) (expected: int64) =
     let input = readText fileName
     let result = Part2.compute input
     test <@ result = expected @>
